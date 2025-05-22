@@ -1,0 +1,337 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cortes Lucrativos - Vídeos Virais para Todos os Nichos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #000000;
+            color: #FFFFFF;
+            line-height: 1.6;
+        }
+
+        header {
+            background: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 120px 20px;
+            position: relative;
+            border-bottom: 5px solid #39FF14;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        header * {
+            position: relative;
+            z-index: 2;
+        }
+
+        header h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-shadow: 3px 3px 6px rgba(57, 255, 20, 0.5);
+            animation: bounceIn 1.5s ease;
+        }
+
+        header p {
+            font-size: 1.5rem;
+            font-weight: 300;
+            max-width: 700px;
+            margin: 0 auto;
+            animation: fadeIn 2s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            text-align: center;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px #39FF14;
+            animation: slideIn 1s ease;
+        }
+
+        .content {
+            background: #000000;
+            padding: 50px;
+            border: 2px solid #39FF14;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(57, 255, 20, 0.3);
+            margin-bottom: 60px;
+            text-align: center;
+            transition: transform 0.4s ease;
+        }
+
+        .content:hover {
+            transform: scale(1.02);
+        }
+
+        .content p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #FFFFFF;
+        }
+
+        .highlight {
+            color: #39FF14;
+            font-weight: 700;
+        }
+
+        .benefits {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 40px 0;
+        }
+
+        .benefit {
+            width: 30%;
+            padding: 25px;
+            background: #39FF14;
+            color: #FFFFFF;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .benefit:hover {
+            transform: translateY(-10px);
+        }
+
+        .benefit h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .testimonials {
+            margin: 50px 0;
+        }
+
+        .testimonial {
+            background: #000000;
+            padding: 25px;
+            border-left: 5px solid #39FF14;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(57, 255, 20, 0.1);
+        }
+
+        .testimonial p {
+            font-style: italic;
+            color: #FFFFFF;
+        }
+
+        .cta-button {
+            background: #39FF14;
+            color: #FFFFFF;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+
+        .cta-button:hover {
+            background: #2ecc71;
+            transform: scale(1.1);
+        }
+
+        footer {
+            background: #000000;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 25px;
+            width: 100%;
+            border-top: 2px solid #39FF14;
+        }
+
+        footer p {
+            font-size: 1rem;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(57, 255, 20, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(57, 255, 20, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(57, 255, 20, 0); }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            header p {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .content p {
+                font-size: 1.1rem;
+            }
+
+            .cta-button {
+                font-size: 1.2rem;
+                padding: 15px 30px;
+            }
+
+            .benefit {
+                width: 100%;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Cortes Lucrativos</h1>
+        <p>Vídeos Virais para Todos os Nichos</p>
+    </header>
+
+    <div class="container">
+        <section class="content">
+            <h2 class="section-title">Exploda Suas Visualizações!</h2>
+            <p>Chegou a hora de levar seu conteúdo para o próximo nível com o <span class="highlight">Cortes Lucrativos</span>! Um pacote <strong>exclusivo</strong> com vídeos virais selecionados a dedo, perfeitos para <strong>qualquer nicho</strong> – entretenimento, lifestyle, educação e muito mais!</p>
+            <p>Esses vídeos são feitos para <span class="highlight">atrapalhar a rolagem</span>, engajar sua audiência e <strong>explodir sua lucratividade</strong> nas redes sociais. Com estratégias otimizadas para o mercado de 2025, você vai viralizar seu canal ou perfil como nunca!</p>
+            <p><span class="highlight">Transforme visualizações em dinheiro agora!</span></p>
+            <a href="#" class="cta-button" onclick="alert('Clique aqui para simular a compra!')">Garanta o Seu Agora!</a>
+        </section>
+
+        <section class="content">
+            <h2 class="section-title">Por Que Escolher o Cortes Lucrativos?</h2>
+            <div class="benefits">
+                <div class="benefit">
+                    <h3>Atração Imediata</h3>
+                    <p>Vídeos que capturam a atenção em apenas 3 segundos!</p>
+                </div>
+                <div class="benefit">
+                    <h3>Engajamento Máximo</h3>
+                    <p>Likes, shares e comentários como você nunca viu.</p>
+                </div>
+                <div class="benefit">
+                    <h3>Lucro Explosivo</h3>
+                    <p>Converta visualizações em receita de verdade.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content testimonials">
+            <h2 class="section-title">Resultados Reais!</h2>
+            <div class="testimonial">
+                <p>"Meus vídeos viralizaram do dia pra noite! O Cortes Lucrativos mudou meu jogo!" - João Silva, Criador de Conteúdo</p>
+            </div>
+            <div class="testimonial">
+                <p>"Nunca vi tanto engajamento no meu nicho de educação. Recomendo!" - Maria Oliveira, Influenciadora</p>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2025 Cortes Lucrativos. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Animação ao carregar a página
+        window.onload = function() {
+            const elements = document.querySelectorAll('.content, .section-title, .benefit, .testimonial');
+            elements.forEach((el, index) => {
+                el.style.opacity = 0;
+                setTimeout(() => {
+                    el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                    el.style.opacity = 1;
+                    el.style.transform = 'translateY(0)';
+                }, 200 * index);
+            });
+        };
+    </script>
+</body>
+</html>
